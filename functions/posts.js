@@ -1,1 +1,1 @@
-const file_path = './posts.json';
+const file_path = '../data/posts.json';

@@ -2,9 +2,9 @@
 
 const g_users = [];
 
-export const file_path = './users.json';
+export const file_path = '../data/users.json';
 
-export function get_user(id) {
+export function get_user( id ) {
 
 }
 
