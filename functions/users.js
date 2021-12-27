@@ -222,15 +222,13 @@ function find_token_by(field, value) {
 function remove_token(field, value) {
     const index = helpers.find_array_index_by(g_tokens, field, value);
 
-    if (index < 0) {
-        throw new Error('Authentication failed')
+    if (index >= 0) {
+        g_tokens.splice(index, 1);
     }
-
-    g_tokens.splice(index, 1);
 }
 
 function create_token(user_id) {
-    remove_token('user_id', user.id);
+    remove_token('user_id', user_id);
 
     const token = crypto.randomBytes(30).toString('base64'),
         expire = new Date();
@@ -257,7 +255,7 @@ function get_active_users(field = null, value = null) {
     const filter = user => user.status === STATUS.ACTIVE;
 
     if (field && value) {
-        return get_users_by.filter(filter);
+        return get_users_by(field, value).filter(filter);
     }
 
     return g_users.filter(filter);
@@ -267,7 +265,7 @@ function get_registered_users(field = null, value = null) {
     const filter = user => [STATUS.ACTIVE, STATUS.CREATED, STATUS.SUSPENDED].includes(user.status);
 
     if (field && value) {
-        return get_users_by.filter(filter);
+        return get_users_by(field, value).filter(filter);
     }
 
     return g_users.filter(filter);
