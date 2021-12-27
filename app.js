@@ -1,8 +1,8 @@
 import express, { json, urlencoded } from 'express';
-import { StatusCodes } from 'http-status-codes';
+import users_routers from './routes/users.js';
 
 const app = express();
-let port = 2751;
+let port = 2718;
 
 // General app settings
 const set_content_type = function (req, res, next) {
@@ -14,6 +14,6 @@ app.use(set_content_type);
 app.use(json()); // to support JSON-encoded bodies
 app.use(urlencoded({ extended: true })); // to support URL-encoded bodies
 
-app.use('/api');
+app.use('/api', users_routers);
 
-app.listen(port);
+app.listen(port, () => console.log("Start listening..."));

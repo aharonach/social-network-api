@@ -3,6 +3,7 @@
   "version": "1.0",
   "description": "Social Network API for JavaScript Course",
   "main": "app.js",
+  "type": "module",
   "author": {
     "name": "Aharon Achildiev",
     "email": "aharonach@gmail.com"

@@ -24,25 +24,43 @@ export function filter_array_by(arr, field, value) {
     return arr.filter(item => item[field] === value);
 }
 
+export function find_array_by(arr, field, value) {
+    return arr.find(item => item[field] === value);
+}
+
+export function find_array_index_by(arr, field, value) {
+    return arr.findIndex(item => item[field] === value);
+}
+
 export function filter_array(arr, filters) {
-    const { date_from, date_to, orderby, order, limit } = filters;
+    const { date_from, date_to, status, orderby, order, limit } = filters;
     let filtered = arr;
 
     if (date_from !== undefined) {
-        filtered = filtered.filter(post => date(date_from) <= date(post.datetime));
+        filtered = filtered.filter(item => date(date_from) <= date(item.datetime));
     }
 
     if (date_to !== undefined) {
-        filtered = filtered.filter(post => date(date_to) >= date(post.datetime));
+        filtered = filtered.filter(item => date(date_to) >= date(item.datetime));
+    }
+
+    if (status !== undefined) {
+        filtered = filtered.filter(item => status === item.status);
     }
 
     switch (orderby?.toLowerCase()) {
         case 'text':
             filtered.sort(sort_by('text', order));
             break;
+
         case 'datetime':
             filtered.sort(sort_by('datetime', order));
             break;
+
+        case 'status':
+            filtered.sort(sort_by('status', order));
+            break;
+
         case 'id':
         default:
             filtered.sort(sort_by('id', order));
