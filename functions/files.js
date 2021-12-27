@@ -9,3 +9,7 @@ async function exists(path) {
         return false;
     }
 }
+
+export async function load_file( file_path ) {
+
+}

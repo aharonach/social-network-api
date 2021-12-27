@@ -11,13 +11,8 @@ const set_content_type = function (req, res, next) {
 }
 
 app.use(set_content_type);
-app.use(json());  // to support JSON-encoded bodies
-app.use(
-	// to support URL-encoded bodies
-	urlencoded({
-		extended: true
-	})
-);
+app.use(json()); // to support JSON-encoded bodies
+app.use(urlencoded({ extended: true })); // to support URL-encoded bodies
 
 app.use('/api');
 
