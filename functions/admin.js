@@ -2,12 +2,8 @@ import * as users from './users.js';
 import * as helpers from './helpers.js';
 
 export function get_users(filters) {
-    return helpers.filter_array(users.admin_get_users(), filters).map( user => {
-        const new_user = Object.assign({}, user);
-        delete new_user['messages'];
-        delete new_user['password'];
-        return new_user;
-    });
+    return helpers.filter_array(users.admin_get_users(), filters)
+        .map(user => helpers.delete_keys(user, ['messages', 'password']));
 }
 
 export function update_user(id, fields) {
@@ -45,6 +41,7 @@ export function update_user(id, fields) {
     }
 
     Object.assign(user, updated_user);
+    users.save_users();
     return Object.keys(updated_user);
 }
 
@@ -56,6 +53,7 @@ export function delete_user(id) {
     }
 
     user.status = users.STATUS.DELETED;
+    users.save_users();
 }
 
 export function message_all_users(text, from_id) {
@@ -66,4 +64,5 @@ export function message_all_users(text, from_id) {
     }
 
     users.get_active_users().forEach(user => users.message_user(user.id, message_text, from_id));
+    users.save_users();
 }

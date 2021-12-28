@@ -49,7 +49,7 @@ router.post('/register', register);
 router.put('/register', register);
 
 router.get('/user', (req, res) => {
-    const user = users.authenticate(req.headers.token);
+    const user = users.get_user(res.locals.user_id);
     res.status(StatusCodes.OK);
     res.send(JSON.stringify(user));
 });

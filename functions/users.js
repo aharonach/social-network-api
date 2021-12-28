@@ -65,7 +65,7 @@ export function get_user(id) {
         throw new Error('User not found');
     }
 
-    return user.pop();
+    return helpers.delete_keys(user.pop(), ['password']);
 }
 
 export function get_users() {
@@ -243,7 +243,7 @@ function clear_expired_tokens() {
         }
     });
 
-    array.forEach(token => {
+    tokens_to_remove.forEach(token => {
         remove_token('token', token.token);
     });
 }

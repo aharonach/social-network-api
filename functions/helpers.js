@@ -71,3 +71,9 @@ export function filter_array(arr, filters) {
 
     return filtered;
 }
+
+export function delete_keys( obj, keys ) {
+    const new_obj = Object.assign({}, obj);
+    keys.forEach( key => delete new_obj[key] );
+    return new_obj;
+}
