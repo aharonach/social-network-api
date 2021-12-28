@@ -59,13 +59,13 @@ export function admin_get_users() {
 }
 
 export function get_user(id) {
-    const user = get_active_users('id', id);
+    const active_users = get_active_users('id', id);
 
-    if (user.length <= 0) {
+    if (active_users.length <= 0) {
         throw new Error('User not found');
     }
 
-    return helpers.delete_keys(user.pop(), ['password']);
+    return helpers.delete_keys(active_users.pop(), ['password']);
 }
 
 export function get_users() {
@@ -85,7 +85,7 @@ export function authenticate(token) {
         throw new Error('Authentication failed');
     }
 
-    return get_user(token.user_id);
+    return get_user(find_token.user_id);
 }
 
 export function login(args) {

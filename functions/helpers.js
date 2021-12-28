@@ -34,7 +34,7 @@ export function find_array_index_by(arr, field, value) {
 
 export function filter_array(arr, filters) {
     const { date_from, date_to, status, orderby, order, limit } = filters;
-    let filtered = arr;
+    let filtered = [...arr];
 
     if (date_from !== undefined) {
         filtered = filtered.filter(item => date(date_from) <= date(item.datetime));

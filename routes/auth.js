@@ -16,7 +16,7 @@ export function user(req, res, next) {
 export function admin(req, res, next) {
     try {
         const user = authenticate(req.headers.token);
-        if (user.role !== 'admin') {
+        if (user.role != 'admin') {
             throw new Error('No permission');
         }
         res.locals.user_id = user.id;
