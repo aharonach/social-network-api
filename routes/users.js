@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import * as users from '../functions/users.js';
 import * as posts from '../functions/posts.js';
 import * as auth from './auth.js';
+import * as helpers from './helpers.js';
 
 const router = express.Router();
 
@@ -12,7 +13,6 @@ function get_user_posts(user_id, filters) {
     return posts_arr.map( post => Object.assign({}, { id: post.id, text: post.text, datetime: post.datetime }));
 }
 
-// router.use(/users?\/(?!login|register).*/, auth_router);
 router.use('/users?', auth.user);
 
 router.post('/login', (req, res) => {
@@ -21,8 +21,7 @@ router.post('/login', (req, res) => {
         res.status(StatusCodes.OK);
         res.send(JSON.stringify({ token: token }));
     } catch (e) {
-        res.status(StatusCodes.BAD_REQUEST);
-        res.send(JSON.stringify({ error: e.message }));
+        helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }
 });
 
@@ -32,8 +31,7 @@ router.post('/logout', (req, res) => {
         res.status(StatusCodes.OK);
         res.send(JSON.stringify({ success: true }));
     } catch (e) {
-        res.status(StatusCodes.BAD_REQUEST);
-        res.send(JSON.stringify({ error: e.message }));
+        helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }
 });
 
@@ -43,11 +41,7 @@ function register(req, res) {
         res.status(StatusCodes.OK);
         res.send(JSON.stringify({ success: true }));
     } catch (e) {
-        res.status(StatusCodes.BAD_REQUEST);
-        res.send(JSON.stringify({
-            success: false,
-            error_message: e.message
-        }));
+        helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }
 }
 
@@ -61,9 +55,9 @@ router.get('/user', (req, res) => {
 });
 
 router.get('/users', (req, res) => {
-    const users = users.get_users();
+    const users_arr = users.get_users();
     res.status(StatusCodes.OK);
-    res.send(JSON.stringify(users));
+    res.send(JSON.stringify(users_arr));
 });
 
 router.get('/user/messages', (req, res) => {
@@ -72,8 +66,7 @@ router.get('/user/messages', (req, res) => {
         res.status(StatusCodes.OK);
         res.send(JSON.stringify(messages));
     } catch(e) {
-        res.status(StatusCodes.BAD_REQUEST);
-        res.send(JSON.stringify({ error: e.message }));
+        helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }
 });
 
@@ -83,8 +76,7 @@ router.get('/user/posts', (req, res) => {
         res.status(StatusCodes.OK);
         res.send(JSON.stringify(posts_arr));
     } catch(e) {
-        res.status(StatusCodes.BAD_REQUEST);
-        res.send(JSON.stringify({ error: e.message }));
+        helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }
 });
 
@@ -94,8 +86,7 @@ router.get('/user/:id', (req, res) => {
         res.status(StatusCodes.OK);
         res.send(JSON.stringify({id: user.id, full_name: user.full_name }));
     } catch(e) {
-        res.status(StatusCodes.NOT_FOUND);
-        res.status(JSON.stringify({ error: e.message }));
+        helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }
 });
 
@@ -105,8 +96,7 @@ function message_user(req, res) {
         res.status(StatusCodes.OK);
         res.send(JSON.stringify({ success: true }))
     } catch (e) {
-        res.status(StatusCodes.NOT_FOUND);
-        res.status(JSON.stringify({ error: e.message }));
+        helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }
 }
 
@@ -119,8 +109,7 @@ router.get('/user/:id/posts', (req, res) => {
         res.status(StatusCodes.OK);
         res.send(JSON.stringify(posts_arr));
     } catch (e) {
-        res.status(StatusCodes.NOT_FOUND);
-        res.status(JSON.stringify({ error: e.message }));
+        helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }
 });
 

@@ -1,5 +1,9 @@
 import express, { json, urlencoded } from 'express';
-import users_routers from './routes/users.js';
+import { load_posts } from './functions/posts.js';
+import { load_users } from './functions/users.js';
+import admin_router from './routes/admin.js';
+import users_router from './routes/users.js';
+import posts_router from './routes/posts.js';
 
 const app = express();
 let port = 2718;
@@ -14,6 +18,12 @@ app.use(set_content_type);
 app.use(json()); // to support JSON-encoded bodies
 app.use(urlencoded({ extended: true })); // to support URL-encoded bodies
 
-app.use('/api', users_routers);
+app.use('/api', admin_router);
+app.use('/api', users_router);
+app.use('/api', posts_router);
 
-app.listen(port, () => console.log("Start listening..."));
+app.listen(port, () => {
+	load_posts();
+	load_users();
+	console.log('Start listening...');
+});

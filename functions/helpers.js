@@ -13,7 +13,7 @@ export function date(date_str) {
 }
 
 export function sort_by(property, order = 'asc') {
-    let sortOrder = order === 'asc' ? 1 : -1;
+    let sortOrder = order == 'asc' ? 1 : -1;
     return function (a, b) {
         var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
         return result * sortOrder;
@@ -21,15 +21,15 @@ export function sort_by(property, order = 'asc') {
 }
 
 export function filter_array_by(arr, field, value) {
-    return arr.filter(item => item[field] === value);
+    return arr.filter(item => item[field] == value);
 }
 
 export function find_array_by(arr, field, value) {
-    return arr.find(item => item[field] === value);
+    return arr.find(item => item[field] == value);
 }
 
 export function find_array_index_by(arr, field, value) {
-    return arr.findIndex(item => item[field] === value);
+    return arr.findIndex(item => item[field] == value);
 }
 
 export function filter_array(arr, filters) {
@@ -45,7 +45,7 @@ export function filter_array(arr, filters) {
     }
 
     if (status !== undefined) {
-        filtered = filtered.filter(item => status === item.status);
+        filtered = filtered.filter(item => status == item.status);
     }
 
     switch (orderby?.toLowerCase()) {

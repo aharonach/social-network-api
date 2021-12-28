@@ -1,4 +1,6 @@
-import { authenticate } from "../functions/users.js";
+import { authenticate } from '../functions/users.js';
+import { StatusCodes } from 'http-status-codes';
+import * as helpers from './helpers.js';
 
 export function user(req, res, next) {
     try {
@@ -7,8 +9,7 @@ export function user(req, res, next) {
         res.locals.user_role = user.role;
         next();
     } catch (e) {
-        res.status(401);
-        res.send(JSON.stringify({ error: e.message }));
+        helpers.handle_error(res, e, StatusCodes.UNAUTHORIZED);
     }
 }
 
@@ -22,7 +23,6 @@ export function admin(req, res, next) {
         res.locals.user_role = user.role;
         next();
     } catch (e) {
-        res.status(401);
-        res.send(JSON.stringify({ error: e.message }));
+        helpers.handle_error(res, e, StatusCodes.UNAUTHORIZED);
     }
 }
