@@ -99,10 +99,14 @@ export function login(args) {
         throw new Error('Password is missing');
     }
 
-    const user = get_active_users('email', email).pop();
+    const user = admin_get_users().find( user => user.email == email );
 
-    if (user == undefined || user.password !== hash_password(password)) {
+    if (user == undefined || user.status == STATUS.DELETED || user.password !== hash_password(password)) {
         throw new Error('Email or password is incorrect');
+    } else if ( user.status == STATUS.CREATED ) {
+        throw new Error('User not yet approved by the admin');
+    } else if ( user.status == STATUS.SUSPENDED ) {
+        throw new Error('User has been suspended');
     }
 
     return create_token(user.id);
