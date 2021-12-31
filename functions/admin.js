@@ -25,7 +25,13 @@ export function update_user(id, fields) {
     }
 
     if (email !== undefined) {
-        if (users.email_exists(email)) {
+        const clean_email = users.email_clean(email);
+
+        if (!users.email_validate(clean_email)) {
+            throw new Error('Email is not a valid email address');
+        }
+
+        if (users.email_exists(clean_email)) {
             throw new Error('Email already exists');
         }
 
@@ -50,6 +56,8 @@ export function delete_user(id) {
 
     if (user == undefined) {
         throw new Error('User not found');
+    } else if ( user.role == users.ROLES.ADMIN ) {
+        throw new Error('Cannot delete admin user');
     }
 
     user.status = users.STATUS.DELETED;

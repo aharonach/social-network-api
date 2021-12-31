@@ -13,25 +13,15 @@ main_router.use('/admin', auth.admin);
 
 router.get('/users', (req, res) => {
     const user_arr = admin.get_users(req.body);
-    res.status(StatusCodes.OK);
-    res.send(helpers.json(user_arr));
+    helpers.handle_success(res, user_arr);
 });
 
 router.post('/users/:id', (req, res) => {
     try {
         const updated = admin.update_user(req.params.id, req.body);
-        res.status(200);
-        res.send(helpers.json({
-            success: true,
-            fields_updated: updated,
-        }))
+        helpers.handle_success(res, { success: true, fields_updated: updated });
     } catch (e) {
-        let status_code = StatusCodes.BAD_REQUEST;
-
-        if ( e.message == 'User not found' ) {
-            status_code = StatusCodes.NOT_FOUND;
-        }
-
+        const status_code = e.message == 'User not found' ? StatusCodes.NOT_FOUND : StatusCodes.BAD_REQUEST;
         helpers.handle_error(res, e, status_code);
     }
 });
@@ -39,8 +29,7 @@ router.post('/users/:id', (req, res) => {
 router.delete('/users/:id', (req, res) => {
     try {
         admin.delete_user(req.params.id);
-        res.status(StatusCodes.OK);
-        res.send(helpers.json({ success: true }));
+        helpers.handle_success(res);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }
@@ -50,8 +39,7 @@ router.delete('/posts/:id', (req, res) => {
     try {
         const user_id = posts.delete_post(req.params.id);
         users.delete_user_post_id(user_id, post_id);
-        res.status(StatusCodes.OK);
-        res.send({ success: true });
+        helpers.handle_success(res);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }
@@ -60,8 +48,7 @@ router.delete('/posts/:id', (req, res) => {
 function send_message(req, res) {
     try {
         admin.message_all_users(req.body.text, res.locals.user_id);
-        res.status(StatusCodes.OK);
-        res.send({ success: true });
+        helpers.handle_success(res);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }

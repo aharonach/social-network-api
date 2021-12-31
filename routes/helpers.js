@@ -1,3 +1,5 @@
+import { StatusCodes } from 'http-status-codes';
+
 /**
  * Handle an error.
  * 
@@ -6,10 +8,12 @@
  */
 export function handle_error(res, error, status_code) {
     res.status(status_code);
-    res.send(JSON.stringify({ 
-        success: false,
-        error: error.message 
-    }));
+    res.send(json({ success: false, error: error.message }));
+}
+
+export function handle_success(res, data = { success: true }, status_code = StatusCodes.OK) {
+    res.status(status_code);
+    res.send(json(data));
 }
 
 export function json(str) {

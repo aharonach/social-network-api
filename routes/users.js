@@ -18,8 +18,7 @@ router.use('/users?', auth.user);
 router.post('/login', (req, res) => {
     try {
         const token = users.login(req.body);
-        res.status(StatusCodes.OK);
-        res.send(JSON.stringify({ token: token }));
+        helpers.handle_success(res, { token: token });
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }
@@ -28,8 +27,7 @@ router.post('/login', (req, res) => {
 router.post('/logout', (req, res) => {
     try {
         users.logout(req.headers.token);
-        res.status(StatusCodes.OK);
-        res.send(JSON.stringify({ success: true }));
+        helpers.handle_success(res);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }
@@ -38,8 +36,7 @@ router.post('/logout', (req, res) => {
 function register(req, res) {
     try {
         users.create_user(req.body, users.ROLES.USER);
-        res.status(StatusCodes.OK);
-        res.send(JSON.stringify({ success: true }));
+        helpers.handle_success(res);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }
@@ -50,31 +47,36 @@ router.put('/register', register);
 
 router.get('/user', (req, res) => {
     const user = users.get_user(res.locals.user_id);
-    res.status(StatusCodes.OK);
-    res.send(JSON.stringify(user));
+    helpers.handle_success(res, user);
 });
 
 router.get('/users', (req, res) => {
     const users_arr = users.get_users();
-    res.status(StatusCodes.OK);
-    res.send(JSON.stringify(users_arr));
+    helpers.handle_success(res, users_arr);
 });
 
 router.get('/user/messages', (req, res) => {
     try {
         const messages = users.get_user_messages(res.locals.user_id, req.body);
-        res.status(StatusCodes.OK);
-        res.send(JSON.stringify(messages));
+        helpers.handle_success(res, messages);
     } catch(e) {
         helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
+    }
+});
+
+router.get('/user/messages/:id', (req, res) => {
+    try {
+        const message = users.get_user_message(res.locals.user_id, req.params.id);
+        helpers.handle_success(res, message);
+    } catch(e) {
+        helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }
 });
 
 router.get('/user/posts', (req, res) => {
     try {
         const posts_arr = get_user_posts(res.locals.user_id, req.body);
-        res.status(StatusCodes.OK);
-        res.send(JSON.stringify(posts_arr));
+        helpers.handle_success(res, posts_arr);
     } catch(e) {
         helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }
@@ -83,8 +85,7 @@ router.get('/user/posts', (req, res) => {
 router.get('/user/:id', (req, res) => {
     try {
         const user = users.get_user( req.params.id );
-        res.status(StatusCodes.OK);
-        res.send(JSON.stringify({id: user.id, full_name: user.full_name }));
+        helpers.handle_success(res, {id: user.id, full_name: user.full_name });
     } catch(e) {
         helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }
@@ -93,8 +94,7 @@ router.get('/user/:id', (req, res) => {
 function message_user(req, res) {
     try {
         users.message_user( req.params.id, req.body.text );
-        res.status(StatusCodes.OK);
-        res.send(JSON.stringify({ success: true }))
+        helpers.handle_success(res);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }
@@ -106,8 +106,7 @@ router.put('/user/:id/message', message_user);
 router.get('/user/:id/posts', (req, res) => {
     try {
         const posts_arr = get_user_posts(req.params.id, req.body);
-        res.status(StatusCodes.OK);
-        res.send(JSON.stringify(posts_arr));
+        helpers.handle_success(res, posts_arr);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }
