@@ -16,8 +16,9 @@ router.get('/posts', (req, res) => {
 
 function create_post(req, res) {
     try {
-        posts.create_post(res.locals.user_id, req.body.text);
-        helpers.handle_success(res);
+        const post_id = posts.create_post(res.locals.user_id, req.body.text);
+        users.add_user_post_id(res.locals.user_id, post_id);
+        helpers.handle_success(res, { success: true, post_id: post_id }, StatusCodes.CREATED);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }
@@ -39,10 +40,11 @@ router.delete('/posts/:id', (req, res) => {
     const error_message = 'No permission to delete post';
 
     try {
-        const user_posts = users.get_user_post_ids(res.locals.user_id);
+        const user_posts = users.get_user_post_ids(res.locals.user_id).map(post_id => parseInt(post_id));
+        const post = posts.get_post(req.params.id);
 
-        if (user_posts.includes(req.params.id)) {
-            posts.delete_post(req.params.id);
+        if (user_posts.includes(parseInt(post.id))) {
+            posts.delete_post(post.id);
             helpers.handle_success(res);
         } else {
             throw new Error(error_message);

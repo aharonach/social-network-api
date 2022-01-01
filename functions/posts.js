@@ -34,13 +34,19 @@ export function get_posts_by_id(post_ids, filters) {
 export function get_post(post_id) {
     const post = g_posts.find(post => post.id == post_id);
 
-    if (post.length <= 0) {
+    if (post == undefined) {
         throw new Error('Post not found');
     }
 
-    return post.pop();
+    return post;
 }
 
+/**
+ * Delete a post.
+ * 
+ * @param {int} user_id 
+ * @returns {text} post message
+ */
 export function create_post(user_id, text) {
     const post_text = text?.trim();
 
@@ -48,14 +54,18 @@ export function create_post(user_id, text) {
         throw new Error('Post text is empty');
     }
 
+    const post_id = helpers.generate_new_id(g_posts);
+
     g_posts.push({
-        id: helpers.generate_new_id(g_posts),
+        id: post_id,
         text: text.trim(),
         datetime: helpers.now(),
         user_id: user_id,
     });
 
     save_posts();
+
+    return post_id;
 }
 
 /**
@@ -67,7 +77,7 @@ export function create_post(user_id, text) {
 export function delete_post(post_id) {
     const index = helpers.find_array_index_by(g_posts, 'id', post_id);
     
-    if (index >= 0) {
+    if (index < 0) {
         throw new Error('Post not found');
     }
 

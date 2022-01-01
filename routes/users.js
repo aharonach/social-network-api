@@ -4,6 +4,7 @@ import * as users from '../functions/users.js';
 import * as posts from '../functions/posts.js';
 import * as auth from './auth.js';
 import * as helpers from './helpers.js';
+import * as functions_helpers from '../functions/helpers.js';
 
 const router = express.Router();
 
@@ -36,7 +37,7 @@ router.post('/logout', (req, res) => {
 function register(req, res) {
     try {
         users.create_user(req.body, users.ROLES.USER);
-        helpers.handle_success(res);
+        helpers.handle_success(res, { success: true }, StatusCodes.CREATED);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
     }
@@ -46,7 +47,7 @@ router.post('/register', register);
 router.put('/register', register);
 
 router.get('/user', (req, res) => {
-    const user = users.get_user(res.locals.user_id);
+    const user = functions_helpers.delete_keys( users.get_user(res.locals.user_id), ['messages', 'posts'] );
     helpers.handle_success(res, user);
 });
 
@@ -85,7 +86,7 @@ router.get('/user/posts', (req, res) => {
 router.get('/user/:id', (req, res) => {
     try {
         const user = users.get_user( req.params.id );
-        helpers.handle_success(res, {id: user.id, full_name: user.full_name });
+        helpers.handle_success(res, { id: user.id, full_name: user.full_name });
     } catch(e) {
         helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }
@@ -93,8 +94,8 @@ router.get('/user/:id', (req, res) => {
 
 function message_user(req, res) {
     try {
-        users.message_user( req.params.id, req.body.text );
-        helpers.handle_success(res);
+        users.message_user( req.params.id, req.body.text, res.locals.user_id );
+        helpers.handle_success(res, { success: true }, StatusCodes.CREATED);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }

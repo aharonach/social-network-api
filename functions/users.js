@@ -157,7 +157,9 @@ export function login(args) {
  * @param {string} token
  */
 export function logout(token) {
-    remove_token('token', token);
+    if ( remove_token('token', token) < 0 ) {
+        throw new Error('Invalid token');
+    }
 }
 
 /**
@@ -227,7 +229,7 @@ export function get_user_messages(id, filters) {
  * @returns object of a message.
  */
 export function get_user_message(id, message_id) {
-    const message = helpers.filter_array_by(get_user(id).messages, 'id', message_id);
+    const message = helpers.filter_array_by(get_user(id).messages, 'id', message_id).pop();
 
     if (message == undefined) {
         throw new Error('Message not found');
@@ -242,8 +244,9 @@ export function get_user_message(id, message_id) {
  * @param {int} id - user id 
  * @param {string} text - message text
  * @param {int} from_id - from user id
+ * @param {bool} save - should save users after pushing the message
  */
-export function message_user(id, text, from_id) {
+export function message_user(id, text, from_id, save = true) {
     const messages = get_user(id).messages,
         message_text = text?.trim();
 
@@ -258,7 +261,9 @@ export function message_user(id, text, from_id) {
         from_id: from_id,
     });
 
-    save_users();
+    if ( save ) {
+        save_users();
+    }
 }
 
 /**
@@ -326,6 +331,8 @@ function remove_token(field, value) {
     if (index >= 0) {
         g_tokens.splice(index, 1);
     }
+
+    return index;
 }
 
 function create_token(user_id) {

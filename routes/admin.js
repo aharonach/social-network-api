@@ -16,6 +16,18 @@ router.get('/users', (req, res) => {
     helpers.handle_success(res, user_arr);
 });
 
+function send_message(req, res) {
+    try {
+        admin.message_all_users(req.body.text, res.locals.user_id);
+        helpers.handle_success(res, { success: true }, StatusCodes.CREATED);
+    } catch (e) {
+        helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
+    }
+}
+
+router.post('/users/message', send_message);
+router.put('/users/message', send_message);
+
 router.post('/users/:id', (req, res) => {
     try {
         const updated = admin.update_user(req.params.id, req.body);
@@ -38,24 +50,12 @@ router.delete('/users/:id', (req, res) => {
 router.delete('/posts/:id', (req, res) => {
     try {
         const user_id = posts.delete_post(req.params.id);
-        users.delete_user_post_id(user_id, post_id);
+        users.delete_user_post_id(user_id, req.params.id);
         helpers.handle_success(res);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.NOT_FOUND);
     }
 });
-
-function send_message(req, res) {
-    try {
-        admin.message_all_users(req.body.text, res.locals.user_id);
-        helpers.handle_success(res);
-    } catch (e) {
-        helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);
-    }
-}
-
-router.post('/users/message', send_message);
-router.put('/users/message', send_message);
 
 main_router.use('/admin', router);
 

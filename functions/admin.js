@@ -7,7 +7,7 @@ export function get_users(filters) {
 }
 
 export function update_user(id, fields) {
-    const { full_name, status, email, password } = fields;
+    const { full_name, status, email, password, role } = fields;
     const user = users.admin_get_user(id);
 
     let updated_user = {};
@@ -22,6 +22,14 @@ export function update_user(id, fields) {
         }
 
         updated_user.status = status;
+    }
+
+    if (role !== undefined) {
+        if (!Object.values(users.ROLES).includes(role)) {
+            throw new Error('Role is invalid');
+        }
+
+        updated_user.role = role;
     }
 
     if (email !== undefined) {
@@ -52,7 +60,7 @@ export function update_user(id, fields) {
 }
 
 export function delete_user(id) {
-    const user = users.admin_get_user(id).pop();
+    const user = users.admin_get_user(id);
 
     if (user == undefined) {
         throw new Error('User not found');
@@ -71,6 +79,11 @@ export function message_all_users(text, from_id) {
         throw new Error('Message is empty');
     }
 
-    users.get_active_users().forEach(user => users.message_user(user.id, message_text, from_id));
+    users.get_users().forEach(user => {
+        if ( user.role != users.ROLES.ADMIN ) {
+            users.message_user(user.id, message_text, from_id, false)
+        }
+    });
+    
     users.save_users();
 }
