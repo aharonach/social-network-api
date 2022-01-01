@@ -15,6 +15,7 @@ function get_user_posts(user_id, filters) {
 }
 
 router.use('/users?', auth.user);
+router.use('/logout', auth.user);
 
 router.post('/login', (req, res) => {
     try {
@@ -27,7 +28,7 @@ router.post('/login', (req, res) => {
 
 router.post('/logout', (req, res) => {
     try {
-        users.logout(req.headers.token);
+        users.logout(res.locals.user_id);
         helpers.handle_success(res);
     } catch (e) {
         helpers.handle_error(res, e, StatusCodes.BAD_REQUEST);

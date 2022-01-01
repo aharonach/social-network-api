@@ -7,8 +7,8 @@ function get_token(req) {
 
     try {
         token = JSON.parse(req.headers.authorization).token;
-    } catch (e) {
-        console.log(e);
+    } catch {
+        // do nothing, just return the token
     } finally {
         return token;
     }
