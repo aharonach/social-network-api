@@ -12,7 +12,7 @@ async function exists(path) {
 
 export async function load(file_path) {
     if (! await exists(file_path)) {
-        save(file_path, JSON.stringify([]));
+        await save(file_path, JSON.stringify([]));
     }
 
     return await fs.readFile(file_path);

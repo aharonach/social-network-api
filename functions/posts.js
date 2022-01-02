@@ -14,8 +14,7 @@ export function load_posts() {
             posts.forEach(element => {
                 g_posts.push(element);
             });
-        })
-        .catch( err => {} );
+        });
 }
 
 export function save_posts() {
