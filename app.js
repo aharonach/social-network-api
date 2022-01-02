@@ -10,7 +10,7 @@ let port = 2718;
 
 // General app settings
 app.use((req, res, next) => {
-	res.setHeader("Content-Type", "application/json; charset=utf-8");
+	res.setHeader('Content-Type', 'application/json; charset=utf-8');
 	next();
 });
 app.use(json()); // to support JSON-encoded bodies

@@ -1,4 +1,4 @@
-import * as crypto from "crypto";
+import * as crypto from 'crypto';
 import * as helpers from './helpers.js';
 import * as files from './files.js';
 
@@ -6,7 +6,7 @@ import * as files from './files.js';
  * Constants used by the module
  */
 const FILE_PATH = 'data/users.json';
-const SALT = "YTLcZ3|nRTYOf?R-p=<)Tx@8wFI8m^cwO,:^$@|L.qVXo>S6,HdV-4y)8ugmG+(n";
+const SALT = 'YTLcZ3|nRTYOf?R-p=<)Tx@8wFI8m^cwO,:^$@|L.qVXo>S6,HdV-4y)8ugmG+(n';
 const TOKEN_INTERVAL = 1000 * 60 * 10;
 const ADMIN_USER = {
     full_name: 'Admin',
