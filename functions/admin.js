@@ -16,20 +16,25 @@ export function update_user(id, fields) {
         throw new Error('User not found');
     }
 
-    if (status !== undefined) {
-        if (!Object.values(users.STATUS).includes(status)) {
-            throw new Error('Status is invalid');
+    // Don't allow to edit admin's status or role
+    if (user.role != users.ROLES.ADMIN) {
+        if (status != undefined) {
+            if (!Object.values(users.STATUS).includes(status)) {
+                throw new Error('Status is invalid');
+            }
+
+            if ( status != users.STATUS.DELETED ) {
+                updated_user.status = status;
+            }
         }
 
-        updated_user.status = status;
-    }
+        if (role !== undefined) {
+            if (!Object.values(users.ROLES).includes(role)) {
+                throw new Error('Role is invalid');
+            }
 
-    if (role !== undefined) {
-        if (!Object.values(users.ROLES).includes(role)) {
-            throw new Error('Role is invalid');
+            updated_user.role = role;
         }
-
-        updated_user.role = role;
     }
 
     if (email !== undefined) {
@@ -68,6 +73,7 @@ export function delete_user(id) {
         throw new Error('Cannot delete admin user');
     }
 
+    users.logout(user.id);
     user.status = users.STATUS.DELETED;
     users.save_users();
 }

@@ -157,9 +157,7 @@ export function login(args) {
  * @param {string} token
  */
 export function logout(user_id) {
-    if ( remove_token('user_id', user_id) < 0 ) {
-        throw new Error('Invalid token');
-    }
+    remove_token('user_id', user_id);
 }
 
 /**
